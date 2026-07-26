@@ -1,62 +1,64 @@
-# Agent Guide: WorkOS SE Interview App
+# Agent Guide: WorkOS Identity Management App
 
-## What this project is
+## Project status
 
-Next.js (App Router) take-home for WorkOS Solutions Engineering candidates. The starter app already implements AuthKit sign-in/sign-out and a basic account page. The challenge is to add the **WorkOS Users Management widget** so org admins can invite, remove, and manage members.
+This Next.js App Router take-home now implements the WorkOS `UsersManagement`
+widget. Authenticated organization admins can view members, send invitations,
+change roles, and remove access from the protected `/users` page.
 
 ## Stack
 
-- **Next.js 15** + React 18 + TypeScript
-- **`@workos-inc/authkit-nextjs`** — AuthKit session middleware, `withAuth`, login/callback helpers
-- **Radix UI Themes** — UI primitives and layout
-- Env config via `.env.local` (see `.env.local.example`)
+- Next.js 15, React 18, TypeScript
+- `@workos-inc/authkit-nextjs` for login, sessions, and route protection
+- `@workos-inc/widgets` and TanStack Query for the embedded management UI
+- `@workos-inc/node@7.82.0` for server-side widget token generation
+- Radix UI Themes for layout and styling
 
-## Key paths
+## Important paths
 
-| Path | Role |
-|------|------|
-| `src/middleware.ts` | AuthKit middleware for `/`, `/account`, `/api` |
-| `src/app/layout.tsx` | Root layout, `AuthKitProvider`, nav |
-| `src/app/page.tsx` | Home (signed-in vs signed-out) |
-| `src/app/login/route.ts` | Redirects to WorkOS sign-in URL |
-| `src/app/callback/route.ts` | OAuth/AuthKit callback (`handleAuth`) |
-| `src/app/account/page.tsx` | Protected account details (`ensureSignedIn`) |
-| `src/app/actions/signOut.ts` | Server action for sign-out |
-| `src/app/api/get-name/route.ts` | Example authenticated API route |
-| `src/app/components/` | `SignInButton`, `Footer` |
+| Path | Responsibility |
+| --- | --- |
+| `src/middleware.ts` | Runs AuthKit on `/`, `/account`, `/users`, and `/api` |
+| `src/app/layout.tsx` | Providers, global widget CSS, navigation, shared layout |
+| `src/app/users/page.tsx` | Protected server-rendered Users page |
+| `src/app/components/users-management-panel.tsx` | Client token fetch, states, widget |
+| `src/app/api/widget-token/route.ts` | Authenticated, org-scoped token endpoint |
+| `src/app/login/route.ts` | Starts hosted AuthKit login |
+| `src/app/callback/route.ts` | Completes login and establishes the session |
+| `implementation.md` | Detailed implementation and security explanation |
 
-## Auth flow (existing)
+## Widget authorization flow
 
-1. User hits `/login` → `getSignInUrl()` → WorkOS hosted AuthKit
-2. WorkOS redirects to `/callback` → `handleAuth()` establishes session cookie
-3. Pages use `withAuth()` / `useAuth()`; middleware refreshes/validates session
-4. Sign-out via server action calling `signOut()`
+1. `/users` requires a valid AuthKit session.
+2. The client posts to `/api/widget-token`.
+3. The backend reads `user.id` and `organizationId` from the verified session.
+4. The backend uses `WORKOS_API_KEY` to request a short-lived token scoped to
+   `widgets:users-table:manage`.
+5. Only that limited token is passed to `UsersManagement`; the API key remains
+   server-side.
 
-## Challenge task (to implement)
+## Required local and dashboard configuration
 
-1. Install WorkOS Widgets dependencies
-2. Add a page/component using the `UsersManagement` widget
-3. Generate a **widget token on the backend** (do not expose API keys client-side)
-4. Wire it into the existing AuthKit session / org context
+`.env.local` must define `WORKOS_CLIENT_ID`, `WORKOS_API_KEY`,
+`WORKOS_COOKIE_PASSWORD` (at least 32 characters), and
+`NEXT_PUBLIC_WORKOS_REDIRECT_URI=http://localhost:3000/callback`.
 
-Docs: [User Management Widget](https://workos.com/docs/user-management/widgets/user-management)
+In the WorkOS Sandbox dashboard configure:
 
-## Local setup
+- Redirect URI: `http://localhost:3000/callback`
+- Sign-in endpoint: `http://localhost:3000/login`
+- App homepage/sign-out redirect: `http://localhost:3000`
+- Sessions CORS origin: `http://localhost:3000`
+- User organization role permission: `widgets:users-table:manage`
 
-```bash
-cp .env.local.example .env.local
-# Fill WORKOS_CLIENT_ID, WORKOS_API_KEY, WORKOS_COOKIE_PASSWORD (≥32 chars)
-# NEXT_PUBLIC_WORKOS_REDIRECT_URI=http://localhost:3000/callback
-npm install
-npm run dev
-```
+Run with `npm install` followed by `npm run dev`.
 
-Dashboard: redirect URI `http://localhost:3000/callback`, homepage `http://localhost:3000`.
+## Agent conventions
 
-## Conventions for agents
-
-- Prefer extending existing AuthKit patterns (`withAuth`, route handlers, server actions) over inventing a parallel auth layer
-- Keep secrets in server-only code / env vars
-- Match existing Radix Themes styling and App Router file layout
-- Do not commit `.env.local` or secrets
-- Working branch for this session: `WorkingBranch`
+- Derive user and organization identity from AuthKit sessions, never client input.
+- Keep API keys and cookie secrets in server-only environment variables.
+- Do not cache widget-token responses or commit `.env.local`.
+- Preserve the pinned WorkOS Node SDK unless compatibility is revalidated.
+- Match existing App Router and Radix patterns; verify with `npx tsc --noEmit`
+  and `npm run build`.
+- Current working branch: `WorkingBranch`.
