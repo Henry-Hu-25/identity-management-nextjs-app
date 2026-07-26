@@ -18,7 +18,7 @@
     "@workos-inc/authkit-nextjs": "^2.1.0",
     "@workos-inc/node": "^7.82.0",
     "@workos-inc/widgets": "^1.15.0",
-    "next": "^15.2.3",
+    "next": "15.2.8",
     "react": "^18",
     "react-dom": "^18"
   },
