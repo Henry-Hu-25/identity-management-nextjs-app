@@ -128,8 +128,6 @@ which web origins may call WorkOS APIs from JavaScript.
 
 ## Environment variables
 
-The local `.env.local` file must provide:
-
 ```text
 WORKOS_CLIENT_ID=...
 WORKOS_API_KEY=...
