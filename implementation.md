@@ -145,17 +145,6 @@ browser/edge code through the `NEXT_PUBLIC_` prefix.
 
 ## Verification performed
 
-The implementation was checked with:
-
-```bash
-npx tsc --noEmit
-npm run build
-```
-
-The production build completed successfully and included dynamic routes for
-`/users` and `/api/widget-token`. An unauthenticated request to `/users`
-redirected to AuthKit, while an unauthenticated token request returned `401`.
-
 End-to-end verification confirms that an authorized organization admin can:
 
 - View organization members.
