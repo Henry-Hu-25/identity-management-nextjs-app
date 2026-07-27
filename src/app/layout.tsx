@@ -1,5 +1,6 @@
 // Import the base CSS styles for the radix-ui components.
 import "@radix-ui/themes/styles.css";
+import "@workos-inc/widgets/styles.css";
 
 import type { Metadata } from "next";
 import NextLink from "next/link";
@@ -46,6 +47,10 @@ export default function RootLayout({
                             <Button asChild variant="soft">
                               <NextLink href="/account">Account</NextLink>
                             </Button>
+
+                            <Button asChild variant="soft">
+                              <NextLink href="/users">Users</NextLink>
+                            </Button>
                           </Flex>
 
                           <SignInButton />
@@ -53,7 +58,7 @@ export default function RootLayout({
                       </Flex>
 
                       <Flex flexGrow="1" align="center" justify="center">
-                        <main>{children}</main>
+                        <main style={{ width: "100%" }}>{children}</main>
                       </Flex>
                     </Flex>
                   </Card>
