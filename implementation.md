@@ -108,14 +108,18 @@ Additional integration changes:
   constrained by its parent layout.
 - `@workos-inc/widgets/styles.css` is loaded globally.
 
-## Required WorkOS configuration
+## Production WorkOS configuration
 
-For local development, the Sandbox application should contain:
+The production WorkOS application should contain:
 
-- Redirect URI: `http://localhost:3000/callback`
-- Sign-in endpoint: `http://localhost:3000/login`
-- App homepage/sign-out redirect: `http://localhost:3000`
-- Allowed CORS web origin under Sessions: `http://localhost:3000`
+- Redirect URI:
+  `https://identity-management-nextjs-app-nu.vercel.app/callback`
+- Sign-in endpoint:
+  `https://identity-management-nextjs-app-nu.vercel.app/login`
+- App homepage/sign-out redirect:
+  `https://identity-management-nextjs-app-nu.vercel.app`
+- Allowed CORS web origin under Sessions:
+  `https://identity-management-nextjs-app-nu.vercel.app`
 
 The signed-in user must:
 
@@ -152,16 +156,3 @@ End-to-end verification confirms that an authorized organization admin can:
 - Change a member's role.
 - Remove or revoke a member.
 - Reload the page without CORS errors.
-
-## Production deployment
-
-For deployment, configure the same secrets in the hosting provider and replace
-localhost dashboard settings with the HTTPS deployment URLs:
-
-- `https://your-domain/callback`
-- `https://your-domain/login`
-- `https://your-domain`
-- CORS origin `https://your-domain`
-
-After deployment, repeat the full sign-in and member-management test against the
-production environment.
