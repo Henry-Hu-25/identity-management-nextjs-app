@@ -110,7 +110,7 @@ Additional integration changes:
 
 ## Production WorkOS configuration
 
-The production WorkOS application should contain:
+The production WorkOS application contains:
 
 - Redirect URI:
   `https://identity-management-nextjs-app-nu.vercel.app/callback`
@@ -120,12 +120,6 @@ The production WorkOS application should contain:
   `https://identity-management-nextjs-app-nu.vercel.app`
 - Allowed CORS web origin under Sessions:
   `https://identity-management-nextjs-app-nu.vercel.app`
-
-The signed-in user must:
-
-- Belong to an organization.
-- Have an active organization in the AuthKit session.
-- Have a role containing `widgets:users-table:manage`.
 
 The CORS entry is required because the rendered widget makes browser-side
 requests to WorkOS. Redirect configuration and CORS solve different problems:
