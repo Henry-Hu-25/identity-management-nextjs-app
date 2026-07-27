@@ -41,14 +41,7 @@ Widget displays and manages the organization's members
 The following packages were added:
 
 - `@workos-inc/widgets` supplies `WorkOsWidgets` and `UsersManagement`.
-- `@tanstack/react-query` is a widget peer dependency used for fetching and
-  caching WorkOS data.
 - `@workos-inc/node` generates widget tokens from server-side code.
-
-`@workos-inc/node` is pinned to the compatible 7.x line because the starter uses
-`@workos-inc/authkit-nextjs@2.1.0`. Installing Node SDK 10 alongside that AuthKit
-version caused incompatible package entry-point resolution. Version 7.82.0
-supports `workos.widgets.getToken()` and matches the starter SDK.
 
 ## Backend token endpoint
 
@@ -163,22 +156,13 @@ The production build completed successfully and included dynamic routes for
 `/users` and `/api/widget-token`. An unauthenticated request to `/users`
 redirected to AuthKit, while an unauthenticated token request returned `401`.
 
-End-to-end verification should also confirm that an authorized organization
-admin can:
+End-to-end verification confirms that an authorized organization admin can:
 
 - View organization members.
 - Invite a user.
 - Change a member's role.
 - Remove or revoke a member.
 - Reload the page without CORS errors.
-
-## Known third-party warning
-
-WorkOS Widgets 1.15.0 may emit a React development warning about a missing
-`key` inside `EditSingleUserRoleDialogContent`. The component is internal to
-`@workos-inc/widgets`; the stack points to `UsersManagementPanel` only because
-that is where the third-party widget is mounted. It is not an authentication or
-security failure, and no application-side `node_modules` patch was added.
 
 ## Production deployment
 
